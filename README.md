@@ -68,6 +68,11 @@ list is kept deliberately: it records what was killed and why.
 - Macroeconomic aggregates: World Bank national accounts
 - Calibration targets: Ossa (2014); Broda and Weinstein (2006); Soderbery (2018)
 
+## Regenerating outputs
+
+`figures/` and `deployment_report.txt` are not committed. Place the BACI files
+in `data/raw/` as described above and run the three scripts to produce them.
+
 ## License
 
 MIT. See `LICENSE`.
