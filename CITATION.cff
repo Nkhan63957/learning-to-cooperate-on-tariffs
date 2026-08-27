@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this code or these results, please cite the paper."
+title: "Learning to Cooperate on Tariffs: The Attainability Frontier of Decentralized Trade Policy"
+authors:
+  - family-names: Khan
+    given-names: Nubaid
+year: 2026
+license: MIT
+repository-code: "https://github.com/USERNAME/REPONAME"
