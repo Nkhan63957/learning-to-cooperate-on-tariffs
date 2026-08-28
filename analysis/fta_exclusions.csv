@@ -1,0 +1,61 @@
+iso_a,iso_b,agreement,in_force,coverage_of_window,confidence,source_note
+# ============================================================================
+# VERIFIED 2026-08-27. Confidence column: HIGH = confirmed this session.
+# MEDIUM = well established, not individually re-confirmed. VERIFY = check
+# before relying on it. Window is 2000-2025 (26 years).
+# Group tokens are expanded to all member pairs by build_panel_v2.py.
+# ============================================================================
+EU_INTERNAL,EU_INTERNAL,European Union customs union,1958,26/26,HIGH,"DEU FRA ITA ESP NLD BEL from 1958-1986; SWE 1995; POL 2004. All pairs internal for the whole or nearly whole window."
+GBR,EU_MEMBER,EU membership then EU-UK TCA,1973,26/26,HIGH,"Member to 2020-12-31; TCA zero-tariff on qualifying goods from 2021-01-01. Covered either way."
+USA,CAN,NAFTA then USMCA,1994,26/26,HIGH,"NAFTA 1994; USMCA from 2020-07-01."
+USA,MEX,NAFTA then USMCA,1994,26/26,HIGH,"NAFTA 1994; USMCA from 2020-07-01."
+CAN,MEX,NAFTA then USMCA,1994,26/26,HIGH,"NAFTA 1994; USMCA from 2020-07-01."
+BRA,ARG,MERCOSUR,1991,26/26,HIGH,"Customs union, both founding members."
+SAU,ARE,GCC customs union,2003,23/26,HIGH,"GCC customs union from 2003."
+IDN,THA,ASEAN Free Trade Area,1993,26/26,HIGH,"AFTA; all four ASEAN members here are original or early signatories."
+IDN,VNM,ASEAN Free Trade Area,1995,26/26,HIGH,"Vietnam acceded to ASEAN 1995."
+IDN,MYS,ASEAN Free Trade Area,1993,26/26,HIGH,
+THA,VNM,ASEAN Free Trade Area,1995,26/26,HIGH,
+THA,MYS,ASEAN Free Trade Area,1993,26/26,HIGH,
+VNM,MYS,ASEAN Free Trade Area,1995,26/26,HIGH,
+# --- EU external agreements -------------------------------------------------
+EU_MEMBER,TUR,EU-Turkey customs union,1995,26/26,MEDIUM,"Industrial goods only; agriculture and services excluded. Partial coverage - defensible either way, decide and record."
+EU_MEMBER,CHE,EU-Switzerland bilateral agreements,1973,26/26,MEDIUM,
+EU_MEMBER,KOR,EU-Korea FTA,2011,15/26,MEDIUM,
+EU_MEMBER,CAN,CETA,2017,9/26,MEDIUM,"Provisional application from 2017-09-21. Under half the window."
+EU_MEMBER,JPN,EU-Japan EPA,2019,7/26,MEDIUM,"Under a third of the window."
+EU_MEMBER,VNM,EVFTA,2020,6/26,MEDIUM,
+EU_MEMBER,MEX,EU-Mexico Global Agreement,2000,26/26,MEDIUM,
+EU_MEMBER,ZAF,EU-South Africa TDCA then SADC EPA,2000,26/26,MEDIUM,
+EU_MEMBER,EGY,EU-Egypt Association Agreement,2004,22/26,MEDIUM,
+# --- ASEAN external ---------------------------------------------------------
+ASEAN,CHN,ASEAN-China FTA,2010,16/26,MEDIUM,
+ASEAN,JPN,ASEAN-Japan CEP,2008,18/26,MEDIUM,
+ASEAN,KOR,ASEAN-Korea FTA,2007,19/26,MEDIUM,
+ASEAN,IND,ASEAN-India FTA goods,2010,16/26,MEDIUM,
+ASEAN,AUS,AANZFTA,2010,16/26,MEDIUM,
+# --- other bilaterals among the thirty --------------------------------------
+USA,KOR,KORUS FTA,2012,14/26,MEDIUM,
+USA,AUS,US-Australia FTA,2005,21/26,MEDIUM,
+JPN,CHE,Japan-Switzerland EPA,2009,17/26,MEDIUM,
+JPN,AUS,JAEPA,2015,11/26,MEDIUM,
+JPN,IND,India-Japan CEPA,2011,15/26,MEDIUM,
+KOR,IND,India-Korea CEPA,2010,16/26,MEDIUM,
+KOR,AUS,KAFTA,2014,12/26,MEDIUM,
+KOR,TUR,Korea-Turkey FTA,2013,13/26,VERIFY,
+CHN,AUS,ChAFTA,2015,11/26,MEDIUM,"Note: China still imposed measures against Australia in 2020 despite ChAFTA. Treated dyads are exempt from these exclusions by construction."
+CHN,KOR,China-Korea FTA,2015,11/26,MEDIUM,
+CHN,CHE,China-Switzerland FTA,2014,12/26,MEDIUM,
+TUR,EGY,Turkey-Egypt FTA,2007,19/26,VERIFY,
+TUR,MYS,Turkey-Malaysia FTA,2015,11/26,VERIFY,
+IND,MYS,India-Malaysia CECA,2011,15/26,VERIFY,
+IND,THA,India-Thailand early harvest,2004,22/26,VERIFY,"Early-harvest scheme only, 82 products. Probably should NOT exclude."
+# ============================================================================
+# RCEP: DELIBERATELY NOT LISTED AS AN EXCLUSION.
+# Entered into force 2022-01-01 for Australia, China, Japan, Thailand and
+# Vietnam; 2022-02-01 Korea; 2022-03-18 Malaysia; 2023-01-02 Indonesia.
+# That is at most 4 of 26 years, and tariff elimination is phased over 10-20
+# years rather than immediate. Excluding on RCEP alone would remove up to 56
+# ordered pairs for coverage of under a sixth of the window.
+# DECISION: do not exclude on RCEP. Recorded in PRESPEC_panel_v2.md.
+# ============================================================================
