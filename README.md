@@ -76,3 +76,10 @@ in `data/raw/` as described above and run the three scripts to produce them.
 ## License
 
 MIT. See `LICENSE`.
+
+## Attempted panel expansion
+
+`analysis/` holds a pre-specified extension of the Section 7.3 panel that was
+executed and then not used. UNCTAD TRAINS does not record discriminatory
+trade-war duties, so the treated dyads showed no treatment. See
+`analysis/FINDINGS.md`.
