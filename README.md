@@ -83,3 +83,12 @@ MIT. See `LICENSE`.
 executed and then not used. UNCTAD TRAINS does not record discriminatory
 trade-war duties, so the treated dyads showed no treatment. See
 `analysis/FINDINGS.md`.
+
+## Verifying the results
+
+`python verify.py` reproduces every headline number in the paper from this
+repository alone: no external data, no network, and nothing beyond the Python
+standard library. It recomputes the calibration from scratch, checks the
+omega = L + T identity to zero residual, verifies the enforcement-tolerance
+theorem including its noiseless limit, and cross-checks the multilateral
+results and stored experiment outputs against the values stated in the paper.
