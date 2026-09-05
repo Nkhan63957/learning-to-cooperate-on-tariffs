@@ -1,0 +1,9 @@
+# pipeline.py, dashboard.py, deployment.py
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.7
+
+# analysis/ (the attempted panel expansion)
+scipy>=1.10
+
+# verify.py needs nothing beyond the standard library.
