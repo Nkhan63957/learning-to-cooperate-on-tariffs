@@ -92,3 +92,11 @@ standard library. It recomputes the calibration from scratch, checks the
 omega = L + T identity to zero residual, verifies the enforcement-tolerance
 theorem including its noiseless limit, and cross-checks the multilateral
 results and stored experiment outputs against the values stated in the paper.
+
+## Provenance
+
+This repository is an archive published after the research was complete, not a
+development history. The research itself ran from June to August 2026 and is
+documented session by session in the project research logbook, including the
+audit that ended the predecessor project and the workstreams that were attempted
+and abandoned.
