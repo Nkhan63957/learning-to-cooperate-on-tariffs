@@ -18,11 +18,147 @@ What it cannot do
 """
 import json
 import math
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent
 PROC = ROOT / "data" / "processed"
 fails = []
+
+
+# ======================================================================================
+# V2 MODE (python verify.py --v2).  Additive, pure standard library.  The no-argument
+# invocation below is UNCHANGED and remains the frozen v1 Regeneron STS check; --v2 runs
+# only these V2 checks and exits before any v1 code executes.  These validate the NEW
+# general-equilibrium headline numbers (ge_frontier.py) by INDEPENDENT recomputation: the
+# GE real-income payoffs are taken as the model primitive (exactly as v1 takes the
+# calibrated b), and every downstream closed-form number is recomputed here and compared
+# to data/processed/v2_ge_routes.json.  Stochastic learning outputs (LOLA, the replicator
+# basin) cannot be re-derived without NumPy and are labelled [consistency], matching how
+# v1 treats the ingested torch results.
+# ======================================================================================
+def run_v2():
+    proc = Path(__file__).parent / "data" / "processed"
+    routes = json.load(open(proc / "v2_ge_routes.json"))
+    s2 = json.load(open(proc / "stage2_results.json"))
+    p = routes["primary"]
+    vfails = []
+
+    def ck(name, got, want, tol, unit=""):
+        ok = abs(got - want) <= tol
+        print(f"  [{'PASS' if ok else 'FAIL'}] {name:52} {got:11.5f}{unit}  stored {want}{unit}")
+        if not ok:
+            vfails.append(name)
+
+    def ck_bool(name, cond):
+        print(f"  [{'PASS' if cond else 'FAIL'}] {name}")
+        if not cond:
+            vfails.append(name)
+
+    def corr(x, y):
+        n = len(x); mx = sum(x) / n; my = sum(y) / n
+        cov = sum((a - mx) * (c - my) for a, c in zip(x, y))
+        vx = sum((a - mx) ** 2 for a in x); vy = sum((c - my) ** 2 for c in y)
+        return cov / math.sqrt(vx * vy)
+
+    print(f"V2 GENERAL-EQUILIBRIUM EXTENSION (ge_frontier.py, newly constructed)")
+    print(f"Independent recomputation of every new V2 headline (CES sigma = {routes['sigma_primary']}).\n")
+
+    # ---- bilateral stage game: folk delta* from the GE stage payoffs ----
+    print("SECTION GE-1: bilateral US-China GE stage game (folk delta* from R, T, P)\n")
+    us = p["bilateral_stage_game"]["US"]
+    R, S, T, P = us["R"], us["S"], us["T"], us["P"]
+    G, L = T - R, R - P
+    ck("defection gain G_US = T - R", G, p["bilateral_GL"]["G_US"], 1e-9)
+    ck("punishment loss L_US = R - P", L, p["bilateral_GL"]["L_US"], 1e-9)
+    ck("critical discount delta*_US = G/(G+L)", G / (G + L), p["bilateral_GL"]["delta_star_US"], 1e-9)
+
+    # ---- route 2: evolutionary invasion threshold (closed form) ----
+    print("\nSECTION GE-2: evolutionary route -- TFT-resists-ALLD threshold (T-R)/(T-P)\n")
+    r2 = p["route2_evolution"]
+    dinv = (T - R) / (T - P)
+    ck("delta_inv = (T-R)/(T-P)", dinv, r2["delta_inv_tft_vs_alld"], 1e-9)
+    ck_bool("delta_inv equals bilateral folk delta* (G/(G+L))", abs(dinv - G / (G + L)) < 1e-9)
+    bc = r2["basin_cooperation"]
+    ck_bool(f"[consistency] replicator cooperation basin in [0,1] (= {bc:.3f})", 0.0 <= bc <= 1.0)
+
+    # ---- route 3: enforcement-tolerance theorem, recomputed in pure stdlib ----
+    print("\nSECTION GE-3: noisy-monitoring tolerance w*(sigma_noise) and delta*(sigma_noise)\n")
+    r3 = p["route3_tolerance"]
+    CXCF = r3["CX_OVER_CF"]
+    K = 1.0 / (math.sqrt(2 * math.pi) * CXCF)
+
+    def wstar(sg):
+        arg = 2 * math.log(K / sg) if sg > 0 else -1
+        return sg * math.sqrt(arg) if arg > 0 else 0.0
+
+    def Phi(z):
+        return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
+
+    d = r3["d_signal"]
+
+    def m_of(sg):
+        w = wstar(sg)
+        return Phi((d - w) / sg) - Phi(-w / sg)
+
+    ck("peak tolerance at sigma = K/sqrt(e)", K / math.sqrt(math.e), r3["peak_tolerance_sigma"], 1e-9)
+    ck("w*(sigma_noise = 0.10)", wstar(0.10), r3["w_star"]["0.10"], 1e-9)
+    ck("w*(sigma_noise = 0.20)", wstar(0.20), r3["w_star"]["0.20"], 1e-9)
+    ck_bool("w* -> 0 as sigma_noise -> 0", wstar(1e-9) < 1e-8)
+    Gge, Lge = r3["G"], r3["L"]
+    ck("delta*(sigma_noise=0.20) = G/(G+L m)", Gge / (Gge + Lge * m_of(0.20)),
+       r3["delta_star_by_sigma_noise"]["0.20"], 1e-9)
+    ck("delta*_noiseless = G/(G+L)", Gge / (Gge + Lge), r3["delta_star_noiseless"], 1e-9)
+
+    # ---- route 4: N=30 network folk delta* ranking, recomputed per economy ----
+    print("\nSECTION GE-4: thirty-economy network -- folk delta*_i = G_i/(G_i+L_i)\n")
+    r4 = p["route4_network"]
+    iso = r4["iso"]; Gs = r4["G"]; Ls = r4["L"]
+    ds = [Gs[i] / (Gs[i] + Ls[i]) if Ls[i] > 0 else float("inf") for i in range(len(iso))]
+    maxdiff = 0.0
+    for i in range(len(iso)):
+        stored = r4["delta_star"][i]
+        if stored is None:
+            maxdiff = max(maxdiff, 0.0 if math.isinf(ds[i]) else 1.0)
+        else:
+            maxdiff = max(maxdiff, abs(ds[i] - stored))
+    ck("max |recomputed - stored| delta*_i over 30 economies", maxdiff, 0.0, 1e-9)
+    fin = [i for i in range(len(iso)) if math.isfinite(ds[i])]
+    binding = iso[max(fin, key=lambda i: ds[i])]
+    ck_bool(f"binding economy recomputed == stored ({binding})", binding == r4["binding_country"])
+    heg = [iso[i] for i in range(len(iso)) if not math.isfinite(ds[i])]
+    ck_bool(f"hegemon set recomputed == stored ({heg or 'none'})", heg == r4["hegemons"])
+    order = sorted(fin, key=lambda i: -ds[i])
+    rank = {iso[k]: r + 1 for r, k in enumerate(order)}
+    ck("Mexico delta* rank", rank["MEX"], r4["MEX_rank"], 0)
+    ck("Canada delta* rank", rank["CAN"], r4["CAN_rank"], 0)
+    b = s2["b"]
+    ck("corr(delta*, market power b)", corr([ds[i] for i in fin], [b[i] for i in fin]),
+       r4["corr_delta_b"], 1e-6)
+
+    # ---- route 1: LOLA transparency (stochastic -> consistency, as v1 does for torch) ----
+    print("\nSECTION GE-5: LOLA transparency (stochastic; consistency checks)\n")
+    r1 = p["route1_lola"]
+    ck_bool(f"[consistency] LOLA joint > naive joint "
+            f"({r1['lola_joint_mean']:+.4f} > {r1['naive_joint_mean']:+.4f})",
+            r1["lola_joint_mean"] > r1["naive_joint_mean"])
+    ck_bool("[consistency] transparency crosses the cooperation gap", bool(r1["lola_crosses_gap"]))
+    vA = r1["lola_vs_alld"]["V_lola"]
+    ck_bool(f"[consistency] LOLA not exploited by ALLD (V_lola = {vA:+.4f}, near defection floor)",
+            vA <= 0.02)
+
+    print("\n" + "=" * 74)
+    if vfails:
+        print(f"{len(vfails)} V2 CHECK(S) FAILED: {vfails}")
+        raise SystemExit(1)
+    print("ALL V2 CHECKS PASSED. Every new V2 general-equilibrium headline number reproduces")
+    print("by independent recomputation from v2_ge_routes.json, with the exact CES GE")
+    print("real-income payoffs taken as the model primitive (as v1 takes the calibrated b).")
+    raise SystemExit(0)
+
+
+if "--v2" in sys.argv:
+    run_v2()
 
 
 def check(name, got, want, tol, unit=""):

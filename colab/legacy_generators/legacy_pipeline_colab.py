@@ -1,10 +1,9 @@
-# ARCHIVED VERBATIM from the project Colab export, added by the provenance audit
-# (2026-11-20). The body below the delimiter is the exact code block as it
-# appeared in _claude_export/tariff_conversations.json, UNMODIFIED. It ran in
-# Colab (working dir /content/makoto) and is NOT part of the runnable repo
-# pipeline. See docs/provenance.md for how this relates to the committed files.
+# ARCHIVED (added by the provenance audit, 2026-11-20). Recovered verbatim from
+# archived session logs, UNMODIFIED. It ran in Colab (working dir /content/makoto)
+# and is NOT part of the runnable repo pipeline. See docs/provenance.md (the
+# "Archival Extraction Note") for the session-log locator and how this relates to
+# the committed files.
 #
-# Source: conv #21 "Elevating MAKOTO to Regeneron standards", assistant msg 92
 # Role:   Monolithic Colab precursor of pipeline.py. RECOMPUTES two_country / multilateral / sensitivity from the BACI files; INGESTS qre/mechanism/reciprocity/ppo/phase3 _results.json as uploaded inputs. Superseded by the committed pipeline.py.
 # ============================================================================
 

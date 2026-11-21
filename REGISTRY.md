@@ -28,6 +28,42 @@ thirteen-dyad panel were added later and are not yet rowed here.*
 | R5 N=30 multilateral | `exp_multilateral` | `multilateral` | network_delta.png, nash_and_delta.png | Extension | binding USA δ*=0.77; no hegemon; partial-corr −0.99; MEX/CAN δ*≈0.36 |
 | R5 robustness | `exp_sensitivity` | `sensitivity` | — | Extension | MEX/CAN below trend in all 16 combos |
 
+## V2 general-equilibrium extension crosswalk (branch `v2-ge-extension`)
+
+New in the `v2-ge-extension` branch only; `main` and `python verify.py` (no arguments) are
+frozen for the v1 submission. Generator: **`ge_frontier.py`** (NumPy + SciPy only, no BACI).
+Outputs: **`data/processed/v2_ge_routes.json`** (routes) and **`data/processed/v2_ge_surfaces.npz`**
+(cached GE real-income payoff surfaces). Every row below is re-derived in pure stdlib by
+**`python verify.py --v2`**. These are **new V2 numbers**, not a reproduction of a pre-existing
+GE result — `ge_frontier.py` is newly constructed (see `docs/provenance.md`). Model: one-sector
+Armington CES GE, payoff = exact real-income indirect utility U = E/P. Headlines are the
+**σ = 4.0** primary; the sensitivity grid is **σ ∈ {2.5, 4.0, 6.0}**.
+
+| Result | ge_frontier fn | v2_ge_routes.json key | paper § | headline (σ=4; robust across σ grid) |
+|---|---|---|---|---|
+| GE bilateral stage game | `bilateral_stage_payoffs` | `primary.bilateral_stage_game`, `.bilateral_GL` | GE layer (§4.6) | GE Nash (US,CN)=0.469/0.436; folk δ*_US=0.619 (0.600→0.627 over σ grid) |
+| R1 LOLA transparency on GE | `route_lola` (via `colab/run_A2.py`) | `primary.route1_lola` | §6.1 | naive joint −0.034 → LOLA joint −0.013; crosses gap, not exploited by ALLD; **true for all σ** |
+| R2 evolutionary basins on GE | `route_evolution` | `primary.route2_evolution` | evolutionary route | coop basin @δ=0.9 = 0.48 (0.48–0.56 over σ); invasion threshold δ_inv=(T−R)/(T−P)=0.619=folk δ* |
+| R3 noisy-monitoring tolerance on GE | `route_tolerance` | `primary.route3_tolerance` | §6.3 | peak tolerance at σ_noise=0.2539; δ*(σ_noise=0.20)=0.659 using GE G,L |
+| R4 N=30 network δ* ranking on GE | `route_network` / `ge_folk_delta_star` | `primary.route4_network` | §7.2 | binding **CHN** δ*=0.421; **MEX/CAN remain last (ranks 30/29)**; no hegemon; partial-corr(δ*,exposure\|b)=−1.00; corr(δ*,b)=0.28 |
+| GE payoff surfaces (cache) | `bilateral_surface`, `network_slices` | — (`v2_ge_surfaces.npz`) | GE layer | `bilat_U_{US,CN}_s{σ}` 41×41; `net_slice_{free,nash}_s{σ}` 30×41; `net_nash_tariff_s{σ}` |
+
+## Honesty rails — V2 GE extension (carry verbatim into any V2 write-up)
+- **`ge_frontier.py` is newly constructed, not recovered.** There was no pre-existing CES GE
+  payoff layer to extend; these are new results. Do not describe them as reproducing a v1 GE number.
+- **The 30×30 trade matrix is gravity-reconstructed** from `stage2` b and exposure (off-diagonal
+  ∝ b_j, row foreign-mass = exposure), because bilateral BACI flows are not in the repo. Weaker
+  provenance than the v1 BACI calibration; state it as a limitation.
+- **σ is a chosen primitive, not estimated.** GE optimal tariffs ≈ 1/(σ−1); the headline uses
+  σ=4 (Ossa 2014) and is checked across {2.5, 4, 6}.
+- **What survives GE vs what does not (report both):** the MEX/CAN "hardest to sustain" ranking,
+  the exposure partial-correlation (≈ −1), and "no hegemon" **survive**. The v1 "**USA** is the
+  binding cooperator" and the strong corr(δ*, market power) do **not** survive — under GE the
+  optimal-tariff compression narrows the δ* band (binding shifts to CHN; corr(δ*,b)≈0.28). This
+  divergence is a finding, not a defect.
+- **verify.py --v2 takes the GE real-income payoffs as the model primitive** (as v1 takes b) and
+  recomputes every closed-form number; the stochastic LOLA/basin outputs are `[consistency]` checks.
+
 ## Honesty rails (carry verbatim into the paper)
 - **two_country pre-2018 ≈3% match is partly definitional** (cooperative tariff anchored to WTO MFN). Falsifiable content = Nash level, breakdown timing, escalation direction.
 - **N=30 partial-corr −0.99 is partly structural** (δ* is a function of b and exposure). Headline = the MEX/CAN ranking driven by real BACI exposure, NOT the correlation.

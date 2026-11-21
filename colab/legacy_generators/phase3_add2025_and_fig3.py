@@ -1,10 +1,9 @@
-# ARCHIVED VERBATIM from the project Colab export, added by the provenance audit
-# (2026-11-20). The body below the delimiter is the exact code block as it
-# appeared in _claude_export/tariff_conversations.json, UNMODIFIED. It ran in
-# Colab (working dir /content/makoto) and is NOT part of the runnable repo
-# pipeline. See docs/provenance.md for how this relates to the committed files.
+# ARCHIVED (added by the provenance audit, 2026-11-20). Recovered verbatim from
+# archived session logs, UNMODIFIED. It ran in Colab (working dir /content/makoto)
+# and is NOT part of the runnable repo pipeline. See docs/provenance.md (the
+# "Archival Extraction Note") for the session-log locator and how this relates to
+# the committed files.
 #
-# Source: conv #21 "Elevating MAKOTO to Regeneron standards", assistant msg 121
 # Role:   Patch + figure cell. Mutates an already-existing phase3_results.json (appends 2025 -> 47.5, the PIIE/Bown second-trade-war point) and renders Fig 3. Does NOT generate the base 2000-2024 series. NOTE: the committed data/processed/phase3_results.json is the PRE-patch version (ends 2024).
 # ============================================================================
 

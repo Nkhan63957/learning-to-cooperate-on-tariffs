@@ -68,7 +68,7 @@ if "rate_source" in df.columns:
     share = (df.rate_source == "AHS").mean()
     print(f"\n  AHS coverage: {share:.1%}  (MFN fallback {1-share:.1%})")
     if share < 0.50:
-        print("  GATE 1: AHS covers under half the dyad-years. Tell Claude before")
+        print("  GATE 1: AHS covers under half the dyad-years. Stop and review before")
         print("          proceeding; the primary indicator may need to be MFN,")
         print("          and the paper must say so.")
 
